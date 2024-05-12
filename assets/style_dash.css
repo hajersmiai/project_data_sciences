@@ -1,0 +1,43 @@
+h1{
+    background-color: rgb(127, 88, 177);
+    text-align: center;
+    display: block;
+    font-size: 40px;
+    margin-block-start:50px;
+    margin-block-end: 50px;
+    margin-inline-start: 320px;
+    margin-inline-end: 320px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    padding-block: 40px 40px;
+
+}
+h3 {
+    display: block;
+    font-size:30px;
+    font-weight: bold;
+    text-align: center;
+}
+.border{
+    border:1px solid blue;
+    padding: 20px;
+}
+.matrix {
+    direction: ltr;
+    font-family: "Open Sans", verdana, arial, sans-serif;
+    position: relative;
+    width: 1500px;
+    height: 700px;
+    margin: 50px;
+    border:1px solid black;
+    padding: 50px 25px 50px;
+    font-weight: bold;
+    font-size: 40px;
+}
+.box {
+    margin: 50px;
+    border:1px solid black;
+    padding: 50px 25px 50px;
+    font-weight: bold;
+    font-size: 10px;
+}
