@@ -58,13 +58,13 @@ def hist_graph(column="Histogramme des prix de logements"):
     #%%    
     #     # Exploring the relationship between price and property features using scatter plots and correlation matrices
     #     # Selecting numerical columns that are relevant to the property features
-def corr_matrix(column="Correlation matrices"):
-    if column =="Correlation matrices":
+def corr_matrix(column="Matrice de corrélation"):
+    if column =="Matrice de corrélation":
       # #     # Displaying the correlation matrix
         numerical_features = df[['log_price', 'accommodates', 'bathrooms', 'bedrooms', 'beds']]
         correlation_matrix = numerical_features.corr()
-        fig=px.imshow(correlation_matrix,text_auto=True,title='Matrice de corrélation des caractéristiques de propriété numériques avec le prix de logement')
-        return fig  
+        fig=px.imshow(correlation_matrix,text_auto=True,title='Matrice de corrélation des caractéristiques de propriété numériques avec le prix de logement',width=1000,height=700)
+        
       #%%
     elif column =="La relation entre le prix et le type de logement":      
     # #     # Scatter plots to visualize the relationship between log_price and other numerical property features
@@ -226,25 +226,25 @@ def host_carac(column="La matrice de corrélation pour les caractéristiques de 
             host_data = df[host_features + numeric_features + ['host_duration_years']]
              # # Plot correlation matrix for host characteristics and numerical features
             
-            fig =px.imshow(host_data.corr(), text_auto=True, title='Correlation Matrix for Host Characteristics')
+            fig =px.imshow(host_data.corr(), text_auto=True, title='Correlation Matrix for Host Characteristics',width=1000,height=700)
              
       # # Visualize the impact of host characteristics on log_price and review_scores_rating       
         elif column=="L'impact des caractéristiques de l'hôte sur le prix des logements et les notes d'évaluation": 
             if co=="L'impact du photo de profile de l'hôte sur le prix dz logement":
 
-                fig=px.box(df,x='host_has_profile_pic', y='log_price',title='Log Price vs Host Has Profile Pic')
+                fig=px.box(df,x='host_has_profile_pic', y='log_price',title="Le prix de logement par rapport à l'hôte a une photo de profil")
             elif co=="L'impact de l'identité vérifiée de l'hôte sur le prix de logement":
-                fig=px.box(df,x='host_identity_verified', y='log_price',title='Log Price vs Host Identity Verified')
+                fig=px.box(df,x='host_identity_verified', y='log_price',title="Prix de logement par rapport à l'identité de l'hôte vérifiée")
             elif co =="L'impact du photo de profile de l'hôte sur le score d'évaluation":
-                fig=px.box(df,x='host_has_profile_pic', y='review_scores_rating',title='Review Scores Rating vs Host Has Profile Pic')
+                fig=px.box(df,x='host_has_profile_pic', y='review_scores_rating',title="Évaluation des scores par rapport à l'hôte a une photo de profil")
 
             else:
-                fig=px.box(df,x='host_identity_verified', y='review_scores_rating',title='Review Scores Rating vs Host Identity Verified')
+                fig=px.box(df,x='host_identity_verified', y='review_scores_rating',title="Évaluation des scores par rapport à l'identité de l'hôte vérifiée")
 
     # # Scatter plot to see the relationship between how long the host has been active and log_price
         elif column =="La relation entre la durée d'activité de l'hôte et le prix de logement":
            
-           fig=px.scatter(df, x='host_duration_years', y='log_price')
+           fig=px.scatter(df, x='host_duration_years', y='log_price',title="La relation entre la durée d'activité de l'hôte et le prix de logement")
         return fig
        
        # Analyzing the distribution of review scores and identifying factors influencing guest satisfaction
@@ -257,7 +257,7 @@ def review_scores_impact(column="Distribution des notes d'évaluation"):
         # Correlation of review scores with numerical features
             review_numeric_features = data[['review_scores_rating', 'log_price', 'accommodates', 'bathrooms', 'bedrooms', 'beds']]
             review_correlation_matrix = review_numeric_features.corr()
-            fig = px.imshow(review_correlation_matrix,text_auto=True, title="Corrélation des notes des évaluations avec les caractéristiques numériques")
+            fig = px.imshow(review_correlation_matrix,text_auto=True, title="Corrélation des notes des évaluations avec les caractéristiques numériques",width=1000,height=700)
         elif column =="L'impact du type de chambre sur les notes des avis.":
             # Box plots to see the impact of room type and property type on review scores
             fig = px.box(df, x='room_type', y='review_scores_rating',title="L'impact du type de chambre sur les notes des avis.")
@@ -269,12 +269,14 @@ def review_scores_impact(column="Distribution des notes d'évaluation"):
             df['host_since'] = pd.to_datetime(df['host_since'])
             df['host_duration_years'] = (pd.to_datetime('today') - df['host_since']).dt.days / 365
             host_review_data = df[host_review_features + ['host_duration_years']]
-            fig = px.imshow( host_review_data.corr(),text_auto=True, title="Corrélation des notes des évaluations avec les caractéristiques  de l'hôte")
+            fig = px.imshow( host_review_data.corr(),text_auto=True, title="Corrélation des notes des évaluations avec les caractéristiques  de l'hôte",width=1000,height=700)
+        else:
+            fig=px.scatter_3d(df,x='review_scores_rating',y='host_has_profile_pic',z='log_price', title="La relation entre le score d'évaluation, le prix de logement et la photo de profil de l'hote",width=1000,height=700)
         return fig
 #%%
 app=dash.Dash(__name__)
 app.layout = html.Div([ html.H1("Etude de données du site airbnb"),
-            html.Div([ html.H2("Distribution des prix selon le type de logement"),
+            html.Div([ html.H2("Distribution des prix logement"),
             dcc.Dropdown( ["Histogramme des prix de logements",
                    "Box plot des prix de logement" ],
                  value="Histogramme des prix de logements", 
@@ -283,8 +285,8 @@ app.layout = html.Div([ html.H1("Etude de données du site airbnb"),
              dcc.Graph(figure=hist_graph(), id="type-graph",className="box")
             ]),
             html.Div([html.H2("Explorer la relation entre le prix et les caractéristiques de la propriété à l'aide de Matrices de corrélation et de Scatter Plot"),
-                      dcc.Dropdown(["Correlation matrices","La relation entre le prix et le type de logement","La relation entre le prix de logement et la salle de bain",
-                      "La relation entre le prix de logement et la chambre à coucher","La relation entre le prix de logement et le lit"],value ="Correlation matrices",id="corr_matrix"),
+                      dcc.Dropdown(["Matrice de corrélation","La relation entre le prix et le type de logement","La relation entre le prix de logement et la salle de bain",
+                      "La relation entre le prix de logement et la chambre à coucher","La relation entre le prix de logement et le lit"],value ="Matrice de corrélation",id="corr_matrix"),
                       dcc.Graph(figure =corr_matrix(),id="fig_corr_matrix",className="box")
             ]),
             html.Div([html.H2("La variation des prix dans différentes villes ou quartiers"),
@@ -329,7 +331,7 @@ app.layout = html.Div([ html.H1("Etude de données du site airbnb"),
             ]),
              html.Div([html.H2("Analyser la répartition des notes des avis et identifier les facteurs influençant la satisfaction des clients"),
                       dcc.Dropdown(["Distribution des notes d'évaluation","Corrélation des notes des évaluations avec les caractéristiques numériques","L'impact du type de chambre sur les notes des avis.",
-                                    "L'impact du type de propriété sur les notes des avis","l'impact des caractéristiques de l'hôte sur les notes des avis"],
+                                    "L'impact du type de propriété sur les notes des avis","l'impact des caractéristiques de l'hôte sur les notes des avis","Autre"],
                                     value="Distribution des notes d'évaluation",id="review_scores_impact"),
                       dcc.Graph(figure=review_scores_impact(),id="fig_review_scores_impact",className="box")
 
